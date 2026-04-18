@@ -309,6 +309,86 @@ Isi ko kehte hain parse integer from string.
         // return res
         return res;
     }
+    public int[] sortTwoColors(int[] nums){
+        /*
+        * [0,0,0,0,0,1,1,1,1]
+        *            i
+        *            j
+        * */
+        int i =0,
+                j=nums.length-1;
+        while (i<j){
+            if (nums[i] == 0){
+                i++;
+            }else {
+                int temp = nums[i];
+                nums[i]=nums[j];
+                nums[j]=temp;
+                j--;
+            }
+        }
+        return nums;
+    }
+    public void  sortColors(int[] nums){
+        int i=0,
+                k=0,
+                j=nums.length-1;
+
+        /*
+        * [2,0,2,1,1,0] | k==1 k++ | k==2 swap to j j-- | k==0 swap to i i++ ,k++
+        *  i
+        *  k
+        *            j
+        *
+        * */
+        while (k<=j){
+            if (nums[k]==1){
+                k++;
+            }else if (nums[k]==2){
+                int temp = nums[k];
+                nums[k]=nums[j];
+                nums[j]=temp;
+                j--;
+            }else {
+                int temp = nums[k];
+                nums[k]=nums[i];
+                nums[i]=temp;
+                i++;
+                k++;
+            }
+        }
+    }
+
+    public static class ListNode{
+        int val;
+        ListNode next;
+       public ListNode(){
+
+        }
+       public ListNode(int val){
+            this.val=val;
+        }
+        public ListNode(int val, ListNode next){
+           this.val=val;
+           this.next=next;
+        }
+    }
+    public ListNode removeNthFromEnd(ListNode head,int n){
+        ListNode dummy = new ListNode(0);
+        dummy.next = head;
+
+        ListNode slow = dummy, fast=dummy;
+
+        for (int i=0; i<=n; i++){
+            fast=fast.next;
+        }
+        while (fast != null){
+            fast=fast.next;
+            slow=slow.next;
+        }
+        slow.next=slow.next.next;
+        return dummy.next;
+    }
 }
 class CheckSolution{
     public static void main(String[] args) {
@@ -368,11 +448,41 @@ class CheckSolution{
         for (int n : twoSum){
             System.out.println(n + " ");
         }*/
-        int[] nums = {-1,0,1,2,-1,-4};
+        /*int[] nums = {-1,0,1,2,-1,-4};
         List<List<Integer>> threeSum = solution.threeSum(nums);
         for (List<Integer> triplet : threeSum){
             System.out.print(triplet + " ");
+        }*/
+
+       /* int[] nums = {0,0,0,0,0,1,1,1,1};
+        int[] sortTwoColors = solution.sortTwoColors(nums);
+        System.out.println(Arrays.toString(sortTwoColors));*/
+
+        /*int[] colors = {2,0,2,1,1,2};
+        solution.sortColors(colors);
+        for (int n : colors){
+            System.out.print(n + " ");
+        }*/
+
+        // Test: [1,2,3,4,5], n=2
+        Solution.ListNode head = new Solution.ListNode(1,new Solution.ListNode(2, new Solution.ListNode(3, new Solution.ListNode(4, new Solution.ListNode(5)))));
+
+        System.out.print("Original: ");
+        print(head);
+
+        Solution.ListNode result = solution.removeNthFromEnd(head, 2);
+
+        System.out.print("After remove: ");
+        print(result);
+    }
+
+    static void print(Solution.ListNode node) {
+        while (node != null) {
+            System.out.print(node.val + " ");
+            node = node.next;
         }
+        System.out.println();
+
 
     }
 }
