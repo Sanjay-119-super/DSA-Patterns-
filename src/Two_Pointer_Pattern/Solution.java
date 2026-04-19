@@ -389,6 +389,87 @@ Isi ko kehte hain parse integer from string.
         slow.next=slow.next.next;
         return dummy.next;
     }
+    public static boolean isStrobogrammatic(Map<Character,Character> map , String s){
+        int i=0,
+                j=s.length()-1;
+
+        /*
+        * s= "181"
+        *      i
+        *      j
+        *
+        *  left =1
+        *  right=1
+        *
+        *  map= {1:1}
+        *       {6:9}
+        *       {9:6}
+        *       {8:8}
+         * */
+        while (i<j){
+            char left = s.charAt(i),
+                    right = s.charAt(j);
+            if (map.containsKey(left)){ // key = 1
+                if (map.get(left) != right) // 1!=1
+                    return false;
+                i++;
+                j--;
+            }else {
+                return false; // key hi nhi hai
+            }
+
+        }
+        return true; // match
+    }
+    public boolean strobogrammatic(String s){
+        Map<Character , Character> map = new HashMap<>();
+
+        map.put('0','0');
+        map.put('1','1');
+        map.put('6','9');
+        map.put('9','6');
+        map.put('8','8');
+
+        return isStrobogrammatic(map, s);
+    }
+    public int appendCharacters(String s, String t){
+        int i=0,
+                j=0;
+        /*
+             0 1 2 3 4 5 6 7
+        * s="c o a c h i n g"
+        *                    i
+             0 1 2 3 4 5
+        * t="c o d i n g"
+        *      j
+        *   append minimum character = ding (4) t ka length = 6 , j = 2 so t.length()-j = 4
+        * */
+        while (i<s.length() && j<t.length()){
+            if (s.charAt(i) == t.charAt(j)){
+                i++;
+                j++;
+            }else {
+                i++;
+            }
+        }
+        return t.length()-j;
+    }
+    public static class Node{
+        Node next;
+        int val;
+        Node parent;
+    }
+    public Node LCA(Node p,Node q){
+
+        Node p1 = p,
+                q1 = q;
+        while (p1 != q1){
+            p1 = (p1==null) ? q : p1.parent;
+            q1 = (q1==null) ? p : q1.parent;
+        }
+        return p1;
+
+    }
 }
 class CheckSolution{
     public static void main(String[] args) {
@@ -465,7 +546,7 @@ class CheckSolution{
         }*/
 
         // Test: [1,2,3,4,5], n=2
-        Solution.ListNode head = new Solution.ListNode(1,new Solution.ListNode(2, new Solution.ListNode(3, new Solution.ListNode(4, new Solution.ListNode(5)))));
+        /*Solution.ListNode head = new Solution.ListNode(1,new Solution.ListNode(2, new Solution.ListNode(3, new Solution.ListNode(4, new Solution.ListNode(5)))));
 
         System.out.print("Original: ");
         print(head);
@@ -481,7 +562,16 @@ class CheckSolution{
             System.out.print(node.val + " ");
             node = node.next;
         }
-        System.out.println();
+        System.out.println();*/
+
+       /* String s = "181";
+
+        System.out.println(solution.strobogrammatic(s));*/
+
+        String s = "coaching";
+        String t = "coding";
+
+        System.out.println(solution.appendCharacters(s,t));
 
 
     }
