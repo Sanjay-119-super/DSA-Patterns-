@@ -470,6 +470,184 @@ Isi ko kehte hain parse integer from string.
         return p1;
 
     }
+    public String reverseWord(String s){
+        //1. remove space from left & right of given String one by one
+        int left =0,
+                right=s.length()-1;
+        /*
+        * s="  hello   world   "
+        *      l
+        *
+        * */
+        while (left<s.length()){
+            if (s.charAt(left) == ' '){
+                left++;
+            }else {
+                break;
+            }
+        }
+        /*
+         * s="  hello   world   "
+         *      l
+         *                  r
+         * */
+        while (right>=0){
+            if (s.charAt(right) == ' '){
+                right--;
+            }else {
+                break;
+            }
+
+        }
+        //2. Build StringBuilder
+        StringBuilder sb = new StringBuilder();
+
+        //clean Spaces from start & end
+       /* s="  hello   world   "
+       *                        l
+       *                       r
+       * */
+        while (left <=right){
+            if (s.charAt(left) != ' '){
+                sb.append(s.charAt(left));
+                left++;
+            }else {
+                if (sb.charAt(sb.length()-1) != ' '){
+                    sb.append(' ');
+                    left++;
+                }else {
+                    left++;
+                }
+
+            }
+        }
+        //4. reverse two pointer
+        int i = 0,
+                j=sb.length()-1;
+        /*
+         * s="  hello   world   "
+         *      l
+         *                  r
+         * now s = "dlrow olleh"
+         * */
+        while (i<=j){
+            char temp = sb.charAt(i);
+            sb.setCharAt(i, sb.charAt(j));
+            sb.setCharAt(j,temp);
+            i++;
+            j--;
+        }
+        //5. Reverse Words in a String
+        int start=0,
+                end=0;
+        /*
+        * now s = "world   hello"
+        *                       s
+        *                      e
+        *
+        * */
+        while (start<sb.length()){
+            while (end<sb.length()&& sb.charAt(end) != ' '){
+                end++;
+            }
+            int p1 = start,
+                    p2=end-1; //w
+            while (p1<=p2){
+                //swap
+                char temp = sb.charAt(p1);
+                sb.setCharAt(p1,sb.charAt(p2));
+                sb.setCharAt(p2,temp);
+                p1++;
+                p2--;
+            }
+            start=end+1;
+            end=start;
+
+        }
+
+
+
+        //6. return
+        return sb.toString();
+    }
+    public void reverWords2(char[] s){
+        int i=0,
+                j=s.length-1;
+        /*
+          --> ['t','h','e',' ','s','k','y']
+
+        * ['y','k','s',' ','e','h','t']
+        *                 i
+        *               j
+        * */
+        while (i<j){
+            char temp = s[i];
+            s[i]=s[j];
+            s[j]=temp;
+            i++;
+            j--;
+        }
+        /*
+        * ['s','k','y',' ','t','h','e']
+        *                   s
+        *                            e
+        *                        p1
+        *                      p2
+        * */
+        int start =0,
+                end = 0;
+        while (start<s.length){
+            while (end<s.length && s[end] != ' '){
+
+                    end++;
+            }
+            int p1=start,
+                    p2 = end-1;
+            while (p1<p2){
+                char temp = s[p1];
+                s[p1]=s[p2];
+                s[p2]=temp;
+                p1++;
+                p2--;
+            }
+            start=end+1;
+            end=start;
+        }
+
+    }
+    public String reverseWord3(String s){
+        //s="hello world"
+        char[] arr = s.toCharArray();
+
+
+        /*arr = ['o','l','l','e','h', 'd','l','r','o','w']
+        *                                  s
+        *                                                    e
+        *                                          p1
+        *                                         p2
+        * */
+
+        int start =0, end =0;
+        while (start<arr.length){
+            while (end<arr.length && arr[end] != ' '){
+                end++;
+            }
+            int p1 = start, p2 = end-1;
+            while (p1<p2){
+                char temp = arr[p1];
+                arr[p1]=arr[p2];
+                arr[p2]=temp;
+                p1++;
+                p2--;
+            }
+            start=end+1;
+            end=start;
+        }
+        //return new String (arr)
+
+        return new String(arr);
+
+    }
 }
 class CheckSolution{
     public static void main(String[] args) {
@@ -567,11 +745,26 @@ class CheckSolution{
        /* String s = "181";
 
         System.out.println(solution.strobogrammatic(s));*/
-
+/*
         String s = "coaching";
         String t = "coding";
 
-        System.out.println(solution.appendCharacters(s,t));
+        System.out.println(solution.appendCharacters(s,t));*/
+
+        /*String s ="  hello   world";
+        String reverseWord = solution.reverseWord(s);
+        System.out.println(reverseWord + " ");*/
+/*
+        char[]s = {'t','h','e',' ','s','k','y'};
+        solution.reverWords2(s);
+        for (char ch : s){
+            System.out.print(ch + " ");
+        }*/
+
+        String s = "Hello World";
+        System.out.println(solution.reverseWord3(s));
+
+
 
 
     }
