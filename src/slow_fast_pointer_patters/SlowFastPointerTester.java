@@ -117,6 +117,97 @@ package slow_fast_pointer_patters;
          }
          return 0;
      }
+/*     public Pair<Node, Node> splitList(Node head) {
+
+         if (head == null) {
+             return new Pair<>(null, null);
+         }
+
+         if (head.next == head) {
+             return new Pair<>(head, null);
+         }
+
+         Node slow = head;
+         Node fast = head;
+
+         // find middle
+         while (fast.next != head && fast.next.next != head) {
+             slow = slow.next;
+             fast = fast.next.next;
+         }
+
+         // even nodes case
+         if (fast.next.next == head) {
+             fast = fast.next;
+         }
+
+         Node head1 = head;
+         Node head2 = slow.next;
+
+         // make first half circular
+         slow.next = head1;
+
+         // make second half circular
+         fast.next = head2;
+
+         return new Pair<>(head1, head2);
+     }*/
+     public int duplicateNumber(int[] nums){
+         int slow=0,
+                 fast=0;
+         do {
+             slow=nums[slow];
+             fast=nums[nums[fast]];
+         }while (fast != slow);
+
+         //cycle
+         int n1 = 0, n2 = slow;
+         while (n1 != n2){
+             n1 = nums[n1];
+             n2 = nums[n2];
+         }
+         return n1;
+     }
+     public boolean isPalindrome(ListNode head){
+         // handle empty or single node
+         if (head==null || head.next==null){
+             return true;
+         }
+         //prepare fast & slow
+         ListNode fast =head,
+                 slow=head;
+         while (fast.next !=null && fast.next.next != null){
+             slow=slow.next;
+             fast=fast.next.next;
+         }
+
+         ListNode secondHalfHead=reverseList(slow.next);
+
+         ListNode i = head, j=secondHalfHead;
+         boolean isPal=true;
+         while (i != j){
+             if (i.val != j.val){
+                 isPal = false;
+                 break;
+             }
+             i=i.next;
+             j=j.next;
+         }
+         return isPal;
+     }
+
+     private ListNode reverseList(ListNode head) {
+         ListNode prev = null;
+         ListNode curr = head;
+
+         while (curr != null){
+             ListNode next = curr.next;
+             curr.next=prev;
+             prev=curr;
+             curr=next;
+         }
+         return prev;
+     }
  }
 public class SlowFastPointerTester{
     public static void main(String[] args) {
@@ -124,12 +215,19 @@ public class SlowFastPointerTester{
 //        System.out.println(solution.isHappy(2));
 
         // 1 → 2 → 3 → 4 → 5
-        Solution.ListNode  head = new Solution.ListNode(1,
+        /*Solution.ListNode  head = new Solution.ListNode(1,
                 new Solution.ListNode(2,
                         new Solution.ListNode(3,
                                 new Solution.ListNode(4,
                                         new Solution.ListNode(5)))));
        Solution.ListNode middleNode=solution.middleNode(head);
-        System.out.println("Middle node: " + middleNode);
+        System.out.println("Middle node: " + middleNode);*/
+
+        /*int[] nums = {1,3,4,2,2,5};
+        System.out.println(solution.duplicateNumber(nums));*/
+
+
+        int[] nums = {1,3,4,2,2,5};
+        System.out.println(solution.duplicateNumber(nums));
     }
 }
