@@ -1,6 +1,11 @@
 package slow_fast_pointer_patters;
 
- class Solution {
+import com.sun.source.tree.BreakTree;
+
+import java.util.HashSet;
+import java.util.Set;
+
+class Solution {
      public boolean isHappy(int n){
          int fast = n,
                  slow=n;
@@ -208,7 +213,161 @@ package slow_fast_pointer_patters;
          }
          return prev;
      }
- }
+     public int maxTwinSum(ListNode head){
+         ListNode slow = head,
+                 fast = head;
+         while (fast.next != null && fast.next.next != null){
+             slow=slow.next;
+             fast=fast.next.next;
+         }
+         ListNode secondHalfHead = reverseList(slow.next);
+         ListNode p1 = head;
+         ListNode p2 = secondHalfHead;
+         int max = Integer.MIN_VALUE;
+         while (p2 != null){
+             int tempMax = p1.val + p2.val;
+             max = Math.max(max,tempMax);
+             p1=p1.next;
+             p2=p2.next;
+         }
+         return max;
+     }
+
+/*
+     public boolean circularArrayLoopBruteForce(int[] nums){
+         int n = nums.length;
+
+         for (int start =0; start<n; start++){
+
+             boolean isForward = nums[start]>0;
+
+             Set<Integer> visited = new HashSet<>();
+
+             int curr = start;
+
+             while (true){
+
+                 */
+/*CASE-1 : Direction check*//*
+
+                 if ((nums[curr]>0)  != isForward) break;
+
+                 //CASE-2 get next index
+                 int next = getNextIndex(nums,curr);
+
+                 //CASE-3 self loop k>1
+                 if (next == curr) break;
+
+                 //CASE-4 found cycle check in set if have return true or add in set
+                 if (visited.contains(next)){
+                     return true;
+                 }
+                 visited.add(curr);
+                 curr=next;
+             }
+         }
+         return false;
+     }
+
+    private int getNextIndex(int[] nums, int curr) {
+        int n = nums.length;
+        int next = (curr + nums[curr])%n;
+        if (next<0)
+            next+=n;
+
+        return next;
+    }
+    public boolean circularArrayLoopBetter(int[] nums){
+         int n = nums.length;
+         for (int start=0; start<n; start++){
+             //skip already visited seq
+             if (nums[start]==0) continue;
+
+             boolean isForward = nums[start]>0;
+             Set<Integer> visited = new HashSet<>();
+             int curr = start;
+
+             while (true){
+                 //if found curr==0 mean ye check ho chuka break kro
+                 if (nums[curr]==0)break;
+                 //CASE-1 direction check
+                 if (nums[curr]>0 != isForward)break;
+                 //CASE-2 get next index
+                 int next = getNextIndex(nums,curr);
+                 //CASE-3 self loop
+                 if (next==curr) break;
+                 //CASE-4 found cycle in set return true if not add in set of index
+                 if (visited.contains(next))
+                     return true;
+                 visited.add(curr);
+                 curr=next;
+             }
+             */
+/*Mark current secuence visited *//*
+
+             curr = start;
+             while (nums[curr] != 0 && (nums[curr]>0) == isForward){
+                 int next = getNextIndex(nums,curr);
+                 nums[curr]=0;
+                 curr=next;
+
+             }
+
+         }
+         return false;
+    }
+    public boolean circularArrayLoopSlowFastOptimized(int[] nums){
+         int n = nums.length;
+
+         for (int start =0; start<n; start++){
+             if (nums[start]==0) continue;
+
+             boolean isForward = nums[start]>0;
+
+             int slow =start,
+                     fast=start;
+             while (true){
+
+                 //Move slow & fast
+                 slow = move(nums,slow,isForward);
+
+
+                 fast = move(nums,fast,isForward);
+                 if (fast !=-1){
+                     fast = move(nums,fast,isForward);
+                 }
+
+                 if (fast == -1 || slow == -1) break;
+
+                 //cycle found
+                 if (slow == fast)
+                     return true;
+
+
+             }
+             int curr = start;
+             while (nums[curr] != 0 && (nums[curr]>0) == isForward){
+                 int next = getNextIndex(nums,curr);
+                 nums[curr]=0;
+                 curr=next;
+             }
+         }
+         return false;
+
+    }
+    private int move(int[] nums , int curr , boolean isForward){
+         //direction mismatch
+        if (nums[curr]>0 != isForward)return -1;
+
+        int next = getNextIndex(nums,curr);
+
+        if(next == curr)return -1;
+
+        return next;
+    }
+*/
+
+}
 public class SlowFastPointerTester{
     public static void main(String[] args) {
         Solution solution = new Solution();
