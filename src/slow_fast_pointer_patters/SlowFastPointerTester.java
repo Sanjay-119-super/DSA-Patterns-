@@ -233,6 +233,7 @@ class Solution {
          return max;
      }
 
+/*
      public boolean circularArrayLoopBruteForce(int[] nums){
          int n = nums.length;
 
@@ -246,7 +247,8 @@ class Solution {
 
              while (true){
 
-CASE-1 : Direction check
+                 */
+/*CASE-1 : Direction check*//*
 
                  if ((nums[curr]>0)  != isForward) break;
 
@@ -300,7 +302,8 @@ CASE-1 : Direction check
                  visited.add(curr);
                  curr=next;
              }
-Mark current secuence visited
+             */
+/*Mark current secuence visited *//*
 
              curr = start;
              while (nums[curr] != 0 && (nums[curr]>0) == isForward){
@@ -362,6 +365,7 @@ Mark current secuence visited
 
         return next;
     }
+*/
 
 }
 public class SlowFastPointerTester{
