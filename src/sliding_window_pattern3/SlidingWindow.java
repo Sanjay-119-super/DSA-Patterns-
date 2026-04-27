@@ -140,6 +140,38 @@ class Solution {
         }
         return max;
     }
+    public int minSubArrayLenBruteForce(int[] nums, int target){
+        int min = Integer.MAX_VALUE;
+        for (int i=0; i<nums.length; i++){
+            int sum=0;
+            for (int j=i; j<nums.length; j++){
+                sum+=nums[j];
+                if (sum>=target){
+                    min=Math.min(min,j-i+1);
+                    break;
+                }
+            }
+        }
+        return min==Integer.MAX_VALUE ? 0 : min;
+    }
+    public int minSubArrayLenOptimizeDynamicSlidingWindow(int[] nums, int target){
+        int min = Integer.MAX_VALUE;
+        int i=0,
+                j=0;
+        int sum=0;
+
+        while (j<nums.length){
+            sum+=nums[j];
+            while (sum>=target){
+                min = Math.min(min,j-i+1);
+                sum-=nums[i];
+                i++;
+            }
+            j++;
+        }
+        return min==Integer.MAX_VALUE ? 0 : min;
+    }
+
 }
 
 public class SlidingWindow{
@@ -150,9 +182,14 @@ public class SlidingWindow{
         System.out.println(solution.maxSubArrayBruteForce(arr,k));
         System.out.println(solution.maxSubArraySlidingWindowFixed(arr,k));*/
 
-        int[] nums={1,5,4,2,9,9,9};
+/*        int[] nums={1,5,4,2,9,9,9};
         int k=3;
 //        System.out.println(solution.maximumSubarraySumBruteForce(nums,k));
-        System.out.println(solution.maximumSubarraySumOptimizeSlidingFixedWindow(nums,k));
+        System.out.println(solution.maximumSubarraySumOptimizeSlidingFixedWindow(nums,k));*/
+
+        int[] nums = {2,3,1,2,4,3};
+        int target=7;
+//        System.out.println(solution.minSubArrayLenBruteForce(nums,target));
+        System.out.println(solution.minSubArrayLenOptimizeDynamicSlidingWindow(nums,target));
     }
 }
