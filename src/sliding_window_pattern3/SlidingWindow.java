@@ -240,6 +240,37 @@ class Solution {
         return max;
     }
 
+    public double findMaxAverageBruteForce(int[] nums , int k){
+        double max =0;
+        for (int i=0; i<=nums.length-k; i++){
+            int sum = 0;
+            for (int j=i; j<i+k; j++){
+                sum+=nums[j];
+
+            }
+            max = Math.max(max, sum);
+
+        }
+
+        return (double) max/k;
+    }
+
+    public double findMaxAverageOptimizeFixedSlidingWindow(int[] nums, int k) {
+        double max = Double.MIN_VALUE;
+        int sum=0;
+
+        for(int j=0; j<k; j++){
+            sum+=nums[j];
+        }
+        max = sum;
+        for(int i=k; i<nums.length; i++){
+            sum+=nums[i];
+            sum-=nums[i-k];
+            max = Math.max(max,sum);
+        }
+        return (double) max/k;
+    }
+
 }
 
 public class SlidingWindow{
