@@ -171,6 +171,74 @@ class Solution {
         }
         return min==Integer.MAX_VALUE ? 0 : min;
     }
+    public  boolean containsNearbyDuplicateBruteForce(int[] nums, int k){
+        /*
+        * [1,2,3,1], k = 3
+        *    i
+        *        j
+        * j==3
+        * <2,3,1>
+        *
+        * */
+        for (int i = 0; i < nums.length; i++) {
+            Set<Integer> checkDups = new HashSet<>();
+            for (int j = i; j <=Math.min(i+k, nums.length-1) ; j++) {
+                if (checkDups.contains(nums[j]))
+                    return true;
+                checkDups.add(nums[j]);
+            }
+        }
+        return false;
+    }
+    public boolean containsNearbyDuplicateOptimizeFixedSlidingWindow(int[] nums , int k){
+        Set<Integer> checkDup = new HashSet<>();
+        //initial window check withing range j+k, n
+        for (int i=0; i<Math.min(k,nums.length); i++){
+            if (checkDup.contains(nums[i]))
+                return true;
+            checkDup.add(nums[i]);
+        }
+
+        //slid window
+        for (int i=k; i<nums.length; i++){
+            if (checkDup.contains(nums[i]))
+                return true;
+            checkDup.add(nums[i]);
+            checkDup.remove(nums[i-k]);
+        }
+        return false;
+    }
+    public  int lengthOfLongestSubstringBruteForce(String s){
+        int max = 0;
+        for (int i =0; i<s.length(); i++){
+            Set<Character> set = new HashSet<>();
+            for (int j =i; j<s.length(); j++){
+                char c = s.charAt(j);
+                if (set.contains(c))
+                    break;
+                set.add(c);
+                max = Math.max(max,j-i+1);
+            }
+        }
+        return max;
+    }
+    public int lengthOfLongestSubstringOptimizeSlidingDynamicWindow(String s){
+        int max=0;
+        Set<Character> set = new HashSet<>();
+        int i=0,
+                j=0;
+        while (j<s.length()){
+            char c = s.charAt(j);
+            while (set.contains(c)){
+                set.remove(s.charAt(i));
+                i++;
+            }
+            set.add(c);
+            max = Math.max(max, j-i+1);
+            j++;
+        }
+        return max;
+    }
 
 }
 
@@ -187,9 +255,14 @@ public class SlidingWindow{
 //        System.out.println(solution.maximumSubarraySumBruteForce(nums,k));
         System.out.println(solution.maximumSubarraySumOptimizeSlidingFixedWindow(nums,k));*/
 
-        int[] nums = {2,3,1,2,4,3};
+        /*int[] nums = {2,3,1,2,4,3};
         int target=7;
-//        System.out.println(solution.minSubArrayLenBruteForce(nums,target));
-        System.out.println(solution.minSubArrayLenOptimizeDynamicSlidingWindow(nums,target));
+        System.out.println(solution.minSubArrayLenBruteForce(nums,target));
+        System.out.println(solution.minSubArrayLenOptimizeDynamicSlidingWindow(nums,target));*/
+
+        int[] nums = {1,2,3,1};
+        int k =3;
+        System.out.println(solution.containsNearbyDuplicateBruteForce(nums,k));
+        System.out.println(solution.containsNearbyDuplicateOptimizeFixedSlidingWindow(nums,k));
     }
 }
