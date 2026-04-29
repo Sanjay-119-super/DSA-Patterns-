@@ -1,9 +1,6 @@
 package sliding_window_pattern3;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 class Solution {
     /**
@@ -270,7 +267,138 @@ class Solution {
         }
         return (double) max/k;
     }
+    public List<String> findRepeatedDnaSequencesBruteForce(String s){
+        Set<String> seen = new HashSet<>();
+        Set<String> res = new HashSet<>();
 
+        /**
+         * ============================================================
+         *  BRUTE FORCE APPROACH
+         * ============================================================
+         *
+         * 💡 Intuition:
+         * - Slide a window of size 10 over the string.
+         * - Store every 10‑letter substring in a HashSet 'seen'.
+         * - If a substring is already in 'seen', add it to the result set.
+         *
+         * ⏱️ Time Complexity:  O(n)   (n = s.length())
+         *     - Loop runs (n-9) times, each substring takes O(10) = O(1)
+         *     - Set operations are O(1) average
+         *
+         * 💾 Space Complexity: O(n)
+         *     - In worst case, all substrings distinct → 'seen' stores ~n strings
+         *     - Each string is 10 chars (constant overhead)
+         *
+         * 🧪 Dry Run Example:
+         *     s = "AAAAACCCCCAAAAACCCCCCAAAAAGGGTTT" (length 31)
+         *
+         *     Window start i = 0 : "AAAAACCCCC" → not seen, add to seen
+         *     ...
+         *     i = 10: "AAAAACCCCC" → already seen! → add to res
+         *     i = 20: "CCCCCAAAAA" → repeats → add to res
+         *     Result: {"AAAAACCCCC","CCCCCAAAAA"}
+         */
+        for (int i=0; i<=s.length()-10; i++){
+            String dna = s.substring(i, i+10);
+            if (seen.contains(dna))
+                res.add(dna);
+            seen.add(dna);
+        }
+        return new ArrayList<>(res);
+    }
+
+    public List<String> findRepeatedDnaSequencesRobinKarpAlgoWithFixedSlidingWindow(String s){
+        int k=10;
+        int sumRep =0;
+        Set<Integer> seen = new HashSet<>();
+        Set<String> res = new HashSet<>();
+        Map<Character,Integer> map = new HashMap<>();
+        map.put('A',0);
+        map.put('C',1);
+        map.put('G',2);
+        map.put('T',3);
+
+        /**
+         * ============================================================
+         *  OPTIMIZED (ROLLING HASH / RABIN‑KARP) APPROACH
+         * ============================================================
+         *
+         * 💡 Intuition:
+         * - Encode the 4 letters (A, C, G, T) as digits 0‑3, i.e., a base‑4 number.
+         * - A 10‑letter substring becomes a 10‑digit base‑4 integer.
+         *   Value range: 0 to 4^10 - 1 ≈ 1 million → fits in an int.
+         *
+         * - Instead of recomputing the hash from scratch, we use a **rolling hash**:
+         *   newHash = (oldHash - outgoingDigit * 4^9) * 4 + incomingDigit
+         *   This O(1) update allows O(n) total time with minimal constant overhead.
+         *
+         * 🔢 Encoding Map:
+         *   'A' → 0, 'C' → 1, 'G' → 2, 'T' → 3
+         *
+         * 📐 Detail Steps:
+         *   1. Compute 4^9 = 262144 once.
+         *   2. Initial window hash: for i=0..9, sum of (digit * 4^(9-i)).
+         *   3. Store hash in 'seen' integer set.
+         *   4. For i = 10 to n-1:
+         *        - Subtract leftmost char's contribution: oldHash -= leftDigit * power
+         *        - Multiply remaining by 4 (shift left in base‑4)
+         *        - Add new char's digit
+         *        - If hash already seen → substring repeated → extract via substring and add to result
+         *        - Add hash to seen
+         *
+         * ⏱️ Time Complexity:  O(n)
+         *     - Initial window hash O(10)=O(1)
+         *     - Sliding loop O(n) with O(1) operations per iteration
+         *
+         * 💾 Space Complexity: O(n)
+         *     - 'seen' stores at most n-9 distinct integer hashes (4 bytes each)
+         *     - Result set stores worst‑case n/2 substrings (10 chars each)
+         *     - Both together still O(n)
+         *
+         * 🧪 Dry Run (First few steps) on s = "AAAAACCCCCAAAAACCCCCCAAAAAGGGTTT" (n=31, k=10)
+         *     Power = 4^9 = 262144
+         *
+         *     Initial window (i=0..9): "AAAAACCCCC"
+         *       Positions: A A A A A C C C C C
+         *       Digits:    0 0 0 0 0 1 1 1 1 1
+         *       Hash = 0*4^9 + 0*4^8 + ... + 0*4^5 + 1*4^4 + 1*4^3 + 1*4^2 + 1*4^1 + 1*4^0
+         *            = 256 + 64 + 16 + 4 + 1 = 341
+         *       seen = {341}
+         *
+         *     i=10: remove s[0]='A'(0), add s[10]='A'(0)
+         *       newHash = (341 - 0*262144) * 4 + 0 = 341*4 = 1364   (window "AAAACCCCCA")
+         *       1364 not in seen → add, seen={341,1364}
+         *
+         *     i=11: remove s[1]='A'(0), add s[11]='A'(0)
+         *       newHash = 1364*4 = 5456   (window "AAACCCCCAA")
+         *       add → seen={341,1364,5456}
+         *
+         *     ... (continues) ...
+         *
+         *     When the window starting at index 10 ("AAAAACCCCC") appears again,
+         *     the hash will be 341, which is already in seen → repeated → extract substring
+         *     "AAAAACCCCC" and add to result. Similarly for "CCCCCAAAAA".
+         *
+         *     Final result: ["AAAAACCCCC","CCCCCAAAAA"]
+         */
+
+        for (int i=0; i<k; i++){
+            int pow = k-i-1;
+            sumRep+=(int)Math.pow(4,pow) * map.get(s.charAt(i));
+        }
+        seen.add(sumRep);
+
+        //Game On Remove / ADD in content time
+        for (int i=k; i<s.length(); i++){
+            sumRep-=(int) Math.pow(4,k-1)*map.get(s.charAt(i-k));
+            sumRep*=4;
+            sumRep+=map.get(s.charAt(i));
+            if (seen.contains(sumRep))
+                res.add(s.substring(i-k+1,i+1));
+            seen.add(sumRep);
+        }
+        return new ArrayList<String>(res);
+    }
 }
 
 public class SlidingWindow{
