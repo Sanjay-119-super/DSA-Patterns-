@@ -399,6 +399,60 @@ class Solution {
         }
         return new ArrayList<String>(res);
     }
+    public int lengthOfLongestSubstringDynamicSlidingWindowWithMap(String s){
+        int max =0;
+        Map<Character,Integer> map = new HashMap<>();
+        int i=0,
+                j=0;
+        while (j<s.length()){
+            char c = s.charAt(j);
+            if (map.containsKey(c)){
+                if (map.get(c)>=i){
+                    i=map.get(c)+1;
+                }
+            }
+            map.put(c,j);
+            max = Math.max(max,j-i+1);
+            j++;
+
+        }
+        return max;
+    }
+    public  int totalFruitBruteForce(int[] fruits){
+        int max =0;
+        for (int i=0; i<fruits.length; i++){
+            Set<Integer> basket = new HashSet<>();
+            for (int j=i; j<fruits.length; j++){
+                basket.add(fruits[j]);
+                if (basket.size()>2)
+                    break;
+                max=Math.max(max,j-i+1);
+            }
+
+        }
+        return max;
+    }
+    public int totalFruitDynamicWindowWithMapOptimize(int[] fruits){
+        int max =0;
+        int i=0,
+                j=0;
+        Map<Integer,Integer> map = new HashMap<>();
+
+        while (j<fruits.length){
+            map.put(fruits[j],map.getOrDefault(fruits[j],0)+1);
+            while (map.size()>2){
+                map.put(fruits[i],map.get(fruits[i])-1);
+
+                if (map.get(fruits[i])==0)
+                    map.remove(fruits[i]);
+                i++;
+            }
+            max=Math.max(max,j-i+1);
+            j++;
+        }
+        return max;
+
+    }
 }
 
 public class SlidingWindow{
@@ -418,10 +472,14 @@ public class SlidingWindow{
         int target=7;
         System.out.println(solution.minSubArrayLenBruteForce(nums,target));
         System.out.println(solution.minSubArrayLenOptimizeDynamicSlidingWindow(nums,target));*/
-
+/*
         int[] nums = {1,2,3,1};
         int k =3;
         System.out.println(solution.containsNearbyDuplicateBruteForce(nums,k));
-        System.out.println(solution.containsNearbyDuplicateOptimizeFixedSlidingWindow(nums,k));
+        System.out.println(solution.containsNearbyDuplicateOptimizeFixedSlidingWindow(nums,k));*/
+
+        int[] fruits = {0,1,2,1,2};
+        System.out.println(solution.totalFruitBruteForce(fruits));
+        System.out.println(solution.totalFruitDynamicWindowWithMapOptimize(fruits));
     }
 }
