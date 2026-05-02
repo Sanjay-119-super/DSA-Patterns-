@@ -453,6 +453,54 @@ class Solution {
         return max;
 
     }
+    public int characterReplacementBruteForce(String s, int k){
+        int max =0;
+        /*
+           0123
+          "ABAB", k=2 i=0, j=1, max=1, maxC=2, freqC={A-2,B-2} OPS=2,K=2
+        *  i
+        *     j
+        *
+        *
+        * */
+        for (int i=0; i<s.length(); i++){
+            int maxC =0;
+            int[] freqC = new int[26];
+            for (int j=i; j<s.length(); j++){
+                char c = s.charAt(j);
+                freqC[c-'A']=freqC[c-'A']+1;
+                maxC=Math.max(maxC,freqC[c-'A']);
+                int ops =(j-i+1)-maxC;
+                if (ops>k) break;
+
+                max=Math.max(max,j-i+1);
+            }
+        }
+        return max;
+    }
+    public  int characterReplacementOptimizeSlidingWindow(String s, int k){
+        int max =0, maxC=0, i=0, j=0;
+        int[] freqC = new int[26];
+
+        while (j<s.length()){
+            char c = s.charAt(j);
+            freqC[c-'A']=freqC[c-'A']+1;
+            maxC=Math.max(maxC,freqC[c-'A']);
+
+            while (j-i+1-maxC>k){
+                char d = s.charAt(i);
+                freqC[d-'A']=freqC[d-'A']-1;
+                maxC=Math.max(maxC,freqC[c-'A']);
+                i++;
+                for (int l=0; l<26; l++){
+                    max=Math.max(max,j-i+1);
+                }
+            }
+            max=Math.max(max,j-i+1);
+            j++;
+        }
+        return max;
+    }
 }
 
 public class SlidingWindow{
@@ -478,8 +526,13 @@ public class SlidingWindow{
         System.out.println(solution.containsNearbyDuplicateBruteForce(nums,k));
         System.out.println(solution.containsNearbyDuplicateOptimizeFixedSlidingWindow(nums,k));*/
 
-        int[] fruits = {0,1,2,1,2};
+        /*int[] fruits = {0,1,2,1,2};
         System.out.println(solution.totalFruitBruteForce(fruits));
-        System.out.println(solution.totalFruitDynamicWindowWithMapOptimize(fruits));
+        System.out.println(solution.totalFruitDynamicWindowWithMapOptimize(fruits));*/
+
+        String s = "AABABBA";
+        int k=1;
+        System.out.println(solution.characterReplacementBruteForce(s,k));
+        System.out.println(solution.characterReplacementOptimizeSlidingWindow(s,k));
     }
 }
