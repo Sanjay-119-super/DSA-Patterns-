@@ -501,6 +501,8 @@ class Solution {
         }
         return max;
     }
+
+
 }
 
 public class SlidingWindow{
