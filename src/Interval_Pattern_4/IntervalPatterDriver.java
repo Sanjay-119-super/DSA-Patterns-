@@ -3,6 +3,7 @@ package Interval_Pattern_4;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 
  class Solution {
@@ -78,12 +79,156 @@ import java.util.List;
          }
          return res;
      }
+     public int[][] intervalIntersection(int[][] firstList, int[][] secondList){
+        int i =0,
+                j=0;
+        List<int[]> list = new ArrayList<>();
+
+        while (i<firstList.length && j<secondList.length){
+            int e1 = firstList[i][1],
+                e2 = secondList[j][1],
+                s1 = firstList[i][0],
+                s2 = secondList[j][0];
+
+            if (e1>=s2 && e2>=s1){
+                list.add(new int[]{
+                        Math.max(s1,s2),
+                        Math.min(e1,e2)
+                });
+            }
+
+            if (e1<e2)
+                i++;
+            else
+                j++;
+        }
+        int[][] res = new int[list.size()][2];
+        for (int k=0; k<list.size(); k++){
+            res[k]=list.get(k);
+        }
+        return res;
+     }
+     public int countDays(int days, int[][] meetings) {
+         // Handle empty input
+         if (meetings == null || meetings.length == 0) {
+             return days;
+         }
+
+         // Sort meetings by start day (fixed Comparator syntax)
+         Arrays.sort(meetings, Comparator.comparingInt(a -> a[0]));
+
+         // Create list to store merged intervals
+         List<int[]> res = new ArrayList<>();
+         res.add(meetings[0]);
+
+         // Merge overlapping meetings
+         for (int i = 1; i < meetings.length; i++) {
+             int[] last = res.get(res.size() - 1);
+             if (meetings[i][0] <= last[1]) { // overlap
+                 // Merge: update end (start does not change due to sorting)
+                 last[1] = Math.max(last[1], meetings[i][1]);
+             } else {
+                 // No overlap: add the meeting as a new interval
+                 res.add(meetings[i]);
+             }
+         }
+
+         // Calculate total free days (gaps)
+         int gap = 0;
+         // Days before the first meeting
+         gap += res.get(0)[0] - 1;
+         // Gaps between merged meetings
+         for (int i = 1; i < res.size(); i++) {
+             gap += res.get(i)[0] - res.get(i - 1)[1] - 1;
+         }
+         // Days after the last meeting
+         gap += days - res.get(res.size() - 1)[1];
+
+         return gap;
+     }
+
+     /*Neat Brute force Algo : days - meetings*/
+     public int countDaysNeatBruteForce(int days, int[][] mettings){
+         Arrays.sort(mettings, Comparator.comparingInt(a->a[0]));
+         List<int[]> res = new ArrayList<>();
+         int meetingDays = 0;
+                 res.add(mettings[0]);
+         /*[2,3],[5,7],[6,7] // meeting ka start time > res ke end time se
+         *        i
+         *
+         * res = [2,3]
+         *
+         * */
+         for (int i=1; i<mettings.length; i++){
+             if (mettings[i][0]>res.get(res.size()-1)[1]){
+                 res.get(res.size()-1)[0] = Math.min(
+                         res.get(res.size()-1)[0],
+                         mettings[i][0]
+                 );
+                 res.get(res.size()-1)[1] = Math.max(
+                         res.get(res.size()-1)[1],
+                         mettings[i][1]
+                 );
+             }
+         }
+
+         for (int i=0; i<res.size(); i++){
+             meetingDays+=res.get(i)[1]-res.get(i)[0]+1;
+         }
+         return days-meetingDays;
+     }
+
+     public int countDaysOptimize(int days, int[][] meetings){
+         Arrays.sort(meetings, Comparator.comparingInt(a->a[0]));
+
+         int maxEnd = meetings[0][1];
+         int gap=0;
+
+         for (int i=1; i<meetings.length; i++){
+             if (meetings[i][0]>maxEnd){
+                 gap+=meetings[i][0]-maxEnd-1;
+             }
+             maxEnd= Math.max(maxEnd,meetings[i][1]);
+         }
+         gap+=meetings[0][0]-1;
+         gap+=days-maxEnd;
+
+         return gap;
+     }
+     public int[][] insert(int[][] intervals, int[] newInterval) {
+         List<int[]> res = new ArrayList<>();
+         int i=0;
+
+         while(i<intervals.length && newInterval[0] > intervals[i][1]){
+             res.add(intervals[i]);
+             i++;
+         }
+
+         while(i<intervals.length && intervals[i][0] <= newInterval[1]){
+             newInterval[0] = Math.min(newInterval[0],intervals[i][0]);
+             newInterval[1] = Math.max(newInterval[1],intervals[i][1]);
+             i++;
+         }
+         res.add(newInterval);
+
+         while(i<intervals.length){
+             res.add(intervals[i]);
+             i++;
+         }
+         int[][] ans = new int[res.size()][2];
+
+         for(int j=0; j<res.size(); j++){
+             ans[j]=res.get(j);
+         }
+         return ans;
+
+     }
 }
 
 public  class  IntervalPatterDriver{
     public static void main(String[] args) {
         Solution solution = new Solution();
-        int[][] intervals = {
+       /* int[][] intervals = {
                 {1,4},
                 {2,6},
                 {8,10},
@@ -92,7 +237,25 @@ public  class  IntervalPatterDriver{
         int[][] merged = solution.mergeBruteForce(intervals);
         for (int[] num : merged)
             System.out.println(Arrays.toString(num) + " ");
-    }
 
+    */
+
+/*        int[][] firstList = {
+                {0,2},{5,10},{13,23},{24,25}
+        };
+        int[][] secondList = {
+                {1,5},{8,12},{15,24},{25,26}
+        };
+        System.out.println(Arrays.deepToString(solution.intervalIntersection(firstList, secondList)));*/
+
+        int[][] meetings = {
+                {5,7},{1,3},{2,4}
+        };
+        int days = 10;
+
+        System.out.println(solution.countDaysNeatBruteForce(days,meetings));
+        System.out.println(solution.countDaysOptimize(days,meetings));
+
+    }
 
 }
