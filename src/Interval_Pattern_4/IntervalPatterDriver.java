@@ -223,6 +223,54 @@ import java.util.List;
          return ans;
 
      }
+     public int removeCoveredIntervalsBruteForce(int[][] intervals){
+         int count=0;
+         /*
+         TC"n^2 SC:1
+         {{1,4}, {3,6}, {2,8}}
+                          i
+                              j
+          a=2, b=8  2.........8
+                    2.........8
+          c=2, d=8
+          count=2
+         */
+         for (int i=0; i<intervals.length; i++){
+             int a = intervals[i][0],
+                     b=intervals[i][1];
+             boolean isCovers = false;
+             for (int j=0; j<intervals.length; j++){
+                 int c = intervals[j][0],
+                         d=intervals[j][1];
+                 if ((i !=j) && a<=c && b>=d){
+                     isCovers=true;
+                     break;
+                 }
+             }
+             if (!isCovers)
+                 count++;
+         }
+         return count;
+     }
+     public  int removeCoveredIntervalsOptimize(int[][] intervals){
+         /*
+         TC : n.log - SC : Sorting space
+         * */
+         int count=1;
+         Arrays.sort(intervals, (a,b)->{
+             int val = Integer.compare(a[0],b[0]);
+             return val==0 ? Integer.compare(b[1],a[1]) : val;
+         });
+         int maxEnd = intervals[0][1];
+
+         for (int i=1; i<intervals.length; i++){
+             if (intervals[i][1]>maxEnd){
+                 count++;
+                 maxEnd=intervals[i][1];
+             }
+         }
+         return count;
+     }
 }
 
 public  class  IntervalPatterDriver{
@@ -248,13 +296,19 @@ public  class  IntervalPatterDriver{
         };
         System.out.println(Arrays.deepToString(solution.intervalIntersection(firstList, secondList)));*/
 
-        int[][] meetings = {
+/*        int[][] meetings = {
                 {5,7},{1,3},{2,4}
         };
         int days = 10;
 
         System.out.println(solution.countDaysNeatBruteForce(days,meetings));
-        System.out.println(solution.countDaysOptimize(days,meetings));
+        System.out.println(solution.countDaysOptimize(days,meetings));*/
+
+        int[][] intervals1 = {{1,4}, {3,6}, {2,8}};
+        System.out.println(solution.removeCoveredIntervalsBruteForce(intervals1));
+        System.out.println(solution.removeCoveredIntervalsOptimize(intervals1));
+
+
 
     }
 
