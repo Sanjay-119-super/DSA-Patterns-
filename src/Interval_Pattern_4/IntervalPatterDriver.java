@@ -271,6 +271,41 @@ import java.util.List;
          }
          return count;
      }
+     public boolean caAttendBruteForce(int[][] meetings){
+          /*
+         Time - O(n^2)
+         Space - O(1)
+         */
+         for (int i=0; i<meetings.length; i++){
+             int s1 = meetings[i][0],
+                     e1 = meetings[i][1];
+             for (int j=i+1; j<meetings.length; j++){
+                 int s2 = meetings[j][0],
+                         e2 = meetings[j][1];
+                 if (s1<e2 && s2<e1)
+                     return false;
+             }
+         }
+         return  true;
+     }
+     public boolean canAttendOptimize(int[][] meetings){
+
+         /*
+         Time - O(n.log.n)
+         Space - O(1)
+         */
+         Arrays.sort(meetings, Comparator.comparingInt(a->a[0]));
+
+         for(int i=0; i<meetings.length-1; i++){
+             int currentMeetingEnd= meetings[i][1];
+             int nextMeetingStart = meetings[i+1][0];
+
+             if (currentMeetingEnd>nextMeetingStart)
+                 return false;
+         }
+
+         return true;
+     }
 }
 
 public  class  IntervalPatterDriver{
@@ -304,9 +339,18 @@ public  class  IntervalPatterDriver{
         System.out.println(solution.countDaysNeatBruteForce(days,meetings));
         System.out.println(solution.countDaysOptimize(days,meetings));*/
 
-        int[][] intervals1 = {{1,4}, {3,6}, {2,8}};
+        /*int[][] intervals1 = {{1,4}, {3,6}, {2,8}};
         System.out.println(solution.removeCoveredIntervalsBruteForce(intervals1));
-        System.out.println(solution.removeCoveredIntervalsOptimize(intervals1));
+        System.out.println(solution.removeCoveredIntervalsOptimize(intervals1));*/
+
+        int[][] meetings = {
+                {2,4},
+                {9,12},
+                {6,10}
+
+        };
+        System.out.println(solution.caAttendBruteForce(meetings));
+        System.out.println(solution.canAttendOptimize(meetings));
 
 
 
