@@ -1,12 +1,9 @@
 package Interval_Pattern_4;
 
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
- class Solution {
+class Solution {
     public int[][] mergeBruteForce(int[][] intervals) {
         // COPY -- list of Array
         // pair wise compare if merge run again algo
@@ -306,6 +303,58 @@ import java.util.List;
 
          return true;
      }
+     public boolean carPollingLineSweepAlgo(int[][] trips, int capacity){
+         Map<Integer , Integer> map = new TreeMap<>();
+
+         //Time: O(n.log.n)
+         //space: O(n)
+         //put all trips in map
+         for (int[] trip : trips){
+             int passenger=trip[0],
+                     start=trip[1],
+                     end=trip[2];
+
+             map.put(start, map.getOrDefault(start,0) + passenger);
+             map.put(end, map.getOrDefault(end,0) - passenger);
+         }
+         //apply line sweep algo
+         int passengers =0;
+         for (var entry: map.entrySet()){
+             passengers = passengers+entry.getValue();
+
+             if (passengers>capacity)
+                 return false;
+
+         }
+         return true;
+     }
+
+     public boolean carPoolingBucketSortAlgo(int[][] trips, int capacity){
+         int[] buckets = new int[1001];
+
+         //time = O(1001 + n)
+         //space = O(1001)
+
+         //fill all trips in buckets & track start & end event or destination
+         for (int[] trip : trips){
+             int pass=trip[0],
+                     start = trip[1],
+                     end= trip[2];
+             buckets[start] +=pass;
+             buckets[end] -=pass;
+         }
+         //work same as line sweep
+         int passengers=0;
+         for (int bucket : buckets){
+             passengers+=bucket;
+
+             if (passengers>capacity)
+                 return false;
+
+         }
+         return true;
+     }
+
 }
 
 public  class  IntervalPatterDriver{
@@ -343,16 +392,27 @@ public  class  IntervalPatterDriver{
         System.out.println(solution.removeCoveredIntervalsBruteForce(intervals1));
         System.out.println(solution.removeCoveredIntervalsOptimize(intervals1));*/
 
-        int[][] meetings = {
+/*        int[][] meetings = {
                 {2,4},
                 {9,12},
                 {6,10}
 
         };
         System.out.println(solution.caAttendBruteForce(meetings));
-        System.out.println(solution.canAttendOptimize(meetings));
+        System.out.println(solution.canAttendOptimize(meetings));*/
 
 
+        // Example 1
+        int[][] trips1 = {{2, 1, 5}, {3, 3, 7}};
+        int capacity1 = 4;
+        boolean result1 = solution.carPollingLineSweepAlgo(trips1, capacity1);
+        System.out.println("Example 1: " + result1);  // Expected: false
+
+        // Example 2
+        int[][] trips2 = {{2, 1, 5}, {3, 3, 7}};
+        int capacity2 = 5;
+        boolean result2 = solution.carPoolingBucketSortAlgo(trips2, capacity2);
+        System.out.println("Example 2: " + result2);  // Expected: true
 
     }
 
