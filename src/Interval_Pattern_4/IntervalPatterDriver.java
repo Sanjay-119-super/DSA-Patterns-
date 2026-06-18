@@ -355,6 +355,24 @@ class Solution {
          return true;
      }
 
+     public int minMeetingRooms(int[] start , int[] end){
+         int len = start.length;
+         Map<Integer, Integer> map = new TreeMap<>();
+
+         for (int i=0; i<len; i++){
+             map.put(start[i] , map.getOrDefault(start[i],0)+1);
+             map.put(end[i] , map.getOrDefault(end[i],0)-1);
+         }
+         int bookings=0,
+                 max=0;
+         for (var entry : map.entrySet()){
+             bookings+=entry.getValue();
+             max = Math.max(max, bookings);
+         }
+         return max;
+     }
+
+
 }
 
 public  class  IntervalPatterDriver{
@@ -402,7 +420,7 @@ public  class  IntervalPatterDriver{
         System.out.println(solution.canAttendOptimize(meetings));*/
 
 
-        // Example 1
+     /*   // Example 1
         int[][] trips1 = {{2, 1, 5}, {3, 3, 7}};
         int capacity1 = 4;
         boolean result1 = solution.carPollingLineSweepAlgo(trips1, capacity1);
@@ -412,8 +430,47 @@ public  class  IntervalPatterDriver{
         int[][] trips2 = {{2, 1, 5}, {3, 3, 7}};
         int capacity2 = 5;
         boolean result2 = solution.carPoolingBucketSortAlgo(trips2, capacity2);
-        System.out.println("Example 2: " + result2);  // Expected: true
+        System.out.println("Example 2: " + result2);  // Expected: true*/
+
+        System.out.println("🎬 Running Meeting Rooms II Tests...");
+        System.out.println("=====================================");
+
+        // --- Test Case 1: Standard overlapping meetings ---
+        // Meetings:, [5, 10], [15, 20]
+        int[] start1 = {0, 5, 15};
+        int[] end1 = {30, 10, 20};
+        int expected1 = 2;
+        int result1 = solution.minMeetingRooms(start1, end1);
+        printResult(1, result1, expected1);
+
+        // --- Test Case 2: No overlapping meetings (Back-to-back) ---
+        // Meetings:, [10, 12]
+        int[] start2 = {7, 10};
+        int[] end2 = {10, 12};
+        int expected2 = 1;
+        int result2 = solution.minMeetingRooms(start2, end2);
+        printResult(2, result2, expected2);
+
+        // --- Test Case 3: Completely simultaneous meetings ---
+        // Meetings:, [1, 5], [1, 5]
+        int[] start3 = {1, 1, 1};
+        int[] end3 = {5, 5, 5};
+        int expected3 = 3;
+        int result3 = solution.minMeetingRooms(start3, end3);
+        printResult(3, result3, expected3);
+
+
+
+        System.out.println("=====================================");
+        System.out.println("🏁 All tests executed.");
 
     }
+    private static void printResult(int testNo, int actual, int expected) {
+        if (actual == expected) {
+            System.out.printf("✅ Test Case %d: PASSED! (Output: %d)\n", testNo, actual);
+        } else {
+            System.out.printf("❌ Test Case %d: FAILED! (Got: %d, Expected: %d)\n", testNo, actual, expected);
+        }
 
+    }
 }
