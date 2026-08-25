@@ -4,7 +4,7 @@
 import { Router } from 'express';
 
 export function getUsers() {
-  return [{ id: 1, name: 'Rahul' }];
+  return [{ id: 1, name: 'Rahul Kumar' }];
 }
 
 export function createUser(data: { name: string }) {
